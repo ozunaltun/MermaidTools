@@ -1,0 +1,23 @@
+# mermaid.tools
+
+> A fast, zero-build, single-file visual editor for Mermaid diagrams.
+
+## Context
+This project is a fully client-side web application for writing, previewing, styling, and exporting Mermaid.js diagrams. It is designed to be extremely portable, with the entire application contained within a single `index.html` file. 
+
+## Technical Architecture
+- **Framework:** Vanilla JavaScript and CSS (No React, Vue, or build tools).
+- **DOM/State:** A custom lightweight virtual-DOM-like `h()` function creates DOM nodes, and a simple global `store` manages state with proxy-based reactivity.
+- **Dependencies (loaded via CDN):**
+  - `mermaid`: Diagram parsing and SVG rendering (v11+)
+  - `svg-pan-zoom`: Canvas interaction (panning and zooming)
+  - `lz-string`: URL hash state compression
+  - `jspdf`: PDF exporting
+- **Persistence:** Project state is saved locally via browser `localStorage` and shared via compressed URL hashes.
+
+## Key Implementation Details
+- **Exporting:** To export SVGs with HTML labels (which render as `foreignObject`) to Canvas (PNG) without triggering cross-origin "tainted canvas" errors, the app actively parses `foreignObject` content and replaces it with native SVG `<tspan>` elements.
+- **Security:** Mermaid is initialized with `securityLevel: 'strict'` to prevent XSS attacks when loading diagrams from untrusted URL hashes.
+
+## Target Audience
+Developers, product managers, and designers who want to quickly generate and style architecture diagrams, flowcharts, and sequence diagrams without managing local tools or learning CSS.
