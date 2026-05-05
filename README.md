@@ -6,7 +6,7 @@ Write Mermaid syntax on the left, see it render in real-time on the right, and t
 
 **[Try it live at mermaid.tools](https://mermaid.tools/)**
 
-![mermaid.tools screenshot](https://mermaid.tools/favicon.ico) *(Replace this with an actual screenshot once deployed)*
+![mermaid.tools screenshot](https://mermaid.tools/og-image.png) 
 
 ## ✨ Features
 
