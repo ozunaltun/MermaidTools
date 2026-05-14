@@ -306,6 +306,15 @@ a:hover { text-decoration: underline; }
 }
 .btn-secondary:hover { background: var(--bg-3); }
 .btn-secondary svg { width: 14px; height: 14px; }
+.tutorial-btn {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-2));
+}
+.tutorial-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg-2));
+}
 
 /* Dropdown */
 .dropdown {
@@ -585,6 +594,18 @@ a:hover { text-decoration: underline; }
 }
 .stale-badge.show { display: block; }
 
+.hybrid-badge {
+  position: absolute; top: 42px; left: 12px;
+  display: none; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  font-size: 11px; font-weight: 600;
+  box-shadow: var(--shadow-md); z-index: 6;
+}
+.hybrid-badge.show { display: inline-flex; }
+.hybrid-badge.warn { background: color-mix(in srgb, var(--warning) 20%, var(--surface)); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 35%, transparent); }
+
 .canvas-toolbar {
   position: absolute; top: 12px; right: 12px;
   display: flex; align-items: center; gap: 2px;
@@ -593,11 +614,152 @@ a:hover { text-decoration: underline; }
   padding: 3px; box-shadow: var(--shadow-md); z-index: 5;
 }
 .canvas-toolbar .icon-btn { width: 28px; height: 24px; }
+.canvas-toolbar .visual-tool { display: none; }
+body.visual-edit-mode .canvas-toolbar .visual-tool { display: inline-grid; }
 .zoom-readout {
   font-size: 11px; font-family: var(--font-mono); color: var(--text-2);
   min-width: 38px; text-align: center; padding: 0 4px;
 }
 .canvas-toolbar .div { width: 1px; height: 16px; background: var(--border); margin: 0 2px; }
+
+#canvas svg g.node { cursor: pointer; }
+body.visual-edit-mode #canvas svg { cursor: default; }
+body.visual-edit-mode #canvas svg g.node { cursor: text; }
+body.connect-mode #canvas svg g.node { cursor: crosshair; }
+#canvas svg g.node.selected rect,
+#canvas svg g.node.selected polygon,
+#canvas svg g.node.selected circle,
+#canvas svg g.node.selected ellipse,
+#canvas svg g.node.connect-source rect,
+#canvas svg g.node.connect-source polygon,
+#canvas svg g.node.connect-source circle,
+#canvas svg g.node.connect-source ellipse {
+  stroke: var(--accent) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 35%, transparent));
+}
+
+.inline-editor {
+  position: absolute;
+  min-width: 120px;
+  min-height: 32px;
+  z-index: 20;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+}
+.inline-editor input,
+.inline-editor textarea {
+  width: 100%;
+  border: 0;
+  outline: none;
+  padding: 0 6px;
+  box-sizing: border-box;
+  background: transparent;
+  color: var(--text);
+  font: 600 13px/1.25 var(--font-ui);
+  text-align: center;
+}
+.inline-editor input {
+  height: 100%;
+  line-height: 1;
+}
+.inline-editor textarea {
+  min-height: 20px;
+  max-height: 100%;
+  resize: none;
+  overflow: hidden;
+}
+
+.floating-popover {
+  position: fixed;
+  z-index: 1800;
+  width: 230px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+.floating-popover .input { height: 30px; }
+.floating-popover .actions {
+  display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px;
+}
+
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.shape-btn {
+  min-height: 34px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 11px;
+  display: grid;
+  place-items: center;
+}
+.shape-btn:hover { background: var(--bg-3); color: var(--text); }
+.shape-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+.connection-list {
+  display: grid;
+  gap: 4px;
+}
+.connection-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%;
+  padding: 5px 7px;
+  border-radius: var(--radius-xs);
+  color: var(--text-2);
+  font-size: 12px;
+}
+.connection-item:hover { background: var(--bg-2); color: var(--text); }
+.connection-item .mono { font-size: 11px; color: var(--text-3); }
+
+.org-list {
+  display: grid;
+  gap: 6px;
+}
+.org-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px 52px;
+  gap: 6px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+}
+.org-row .input,
+.org-row .select { height: 26px; }
+.org-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.code-preview {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  min-height: 320px;
+  max-height: 520px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font: 12px/1.55 var(--font-mono);
+  white-space: pre;
+}
 
 
 
@@ -837,6 +999,306 @@ a:hover { text-decoration: underline; }
 .template-name { font-size: 12.5px; font-weight: 500; }
 .template-cat { font-size: 11px; color: var(--text-3); }
 
+/* Tutorial */
+.tutorial {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 0;
+}
+.tutorial-hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 42%),
+    linear-gradient(160deg, var(--surface), var(--bg-1));
+}
+.tutorial-copy h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+.tutorial-copy p {
+  margin: 0 0 12px;
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.tutorial-version {
+  display: inline-flex; align-items: center; gap: 6px;
+  width: fit-content;
+  padding: 4px 8px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 650;
+}
+.tutorial-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.tutorial-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 11.5px;
+}
+.tutorial-pill .ic {
+  width: 13px; height: 13px;
+  display: inline-flex;
+  color: var(--accent);
+}
+.tutorial-app-visual {
+  min-height: 208px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.tutorial-mini-top {
+  height: 28px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+}
+.tutorial-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); opacity: .55; }
+.tutorial-dot.a { background: #ff6b6b; opacity: .9; }
+.tutorial-dot.b { background: #f7b955; opacity: .9; }
+.tutorial-dot.c { background: #35c46a; opacity: .9; }
+.tutorial-mini-body { display: grid; grid-template-columns: 42% 58%; min-height: 180px; }
+.tutorial-mini-code {
+  padding: 12px 10px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-1);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+.tutorial-mini-code span { display: block; white-space: nowrap; }
+.tutorial-mini-code .kw { color: var(--accent); }
+.tutorial-mini-code .str { color: var(--success); }
+.tutorial-mini-canvas {
+  position: relative;
+  overflow: hidden;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.tutorial-node {
+  position: absolute;
+  display: grid; place-items: center;
+  min-width: 64px; height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+  background: color-mix(in srgb, var(--surface) 88%, var(--accent));
+  color: var(--text);
+  font-size: 10.5px;
+  box-shadow: var(--shadow-sm);
+}
+.tutorial-node.root { left: 50%; top: 28px; transform: translateX(-50%); }
+.tutorial-node.left { left: 28px; top: 92px; }
+.tutorial-node.mid { left: 50%; top: 92px; transform: translateX(-50%); }
+.tutorial-node.right { right: 28px; top: 92px; }
+.tutorial-edge {
+  position: absolute;
+  height: 1px;
+  background: var(--text-3);
+  opacity: .75;
+  transform-origin: left center;
+}
+.tutorial-edge.e1 { left: 123px; top: 75px; width: 58px; transform: rotate(28deg); }
+.tutorial-edge.e2 { left: 167px; top: 74px; width: 48px; transform: rotate(90deg); }
+.tutorial-edge.e3 { left: 189px; top: 75px; width: 64px; transform: rotate(-26deg); }
+.tutorial-section-title {
+  padding: 4px 16px 0;
+}
+.tutorial-section-title h4 {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+.tutorial-card {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+  padding: 10px;
+}
+.tutorial-card h5 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+.tutorial-card p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.tutorial-card ul {
+  margin: 8px 0 0;
+  padding-left: 16px;
+  color: var(--text-2);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.tutorial-visual {
+  min-height: 132px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.tutorial-visual.code { padding: 12px; font-family: var(--font-mono); font-size: 10px; line-height: 1.7; }
+.tutorial-visual.code span { display: block; }
+.tutorial-visual.code .line { color: var(--text-3); }
+.tutorial-visual.code .hot { color: var(--accent); }
+.tutorial-visual.canvas {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.tutorial-toolbar {
+  position: absolute; right: 8px; top: 8px;
+  display: flex; gap: 3px;
+  padding: 3px;
+  background: var(--overlay);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.tutorial-tool { width: 16px; height: 14px; border-radius: 3px; background: var(--bg-3); }
+.tutorial-tool.active { background: var(--accent); }
+.tutorial-chip {
+  position: absolute;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 650;
+}
+.tutorial-org-person {
+  position: absolute;
+  min-width: 72px;
+  height: 24px;
+  display: grid; place-items: center;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  font-size: 10px;
+}
+.tutorial-org-person.ceo { left: 38px; top: 12px; }
+.tutorial-org-person.mgr { left: 38px; top: 54px; border-color: var(--accent); }
+.tutorial-org-person.rep1 { left: 8px; top: 96px; }
+.tutorial-org-person.rep2 { right: 8px; top: 96px; }
+.tutorial-action-stack {
+  position: absolute; right: 8px; top: 12px;
+  display: grid; gap: 5px;
+}
+.tutorial-action {
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 9.5px;
+}
+.tutorial-hybrid-row {
+  position: absolute;
+  left: 10px; right: 10px;
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.tutorial-hybrid-row.managers { top: 45px; }
+.tutorial-hybrid-row.reports { top: 82px; }
+.tutorial-team {
+  flex: 1;
+  display: grid; gap: 4px;
+  padding: 6px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 6px;
+}
+.tutorial-team div {
+  height: 18px;
+  border-radius: 3px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+.tutorial-team div:first-child { background: color-mix(in srgb, var(--accent) 14%, var(--bg-2)); }
+.tutorial-inspector-form { padding: 10px; display: grid; gap: 8px; }
+.tutorial-field { height: 18px; border-radius: 4px; background: var(--bg-2); border: 1px solid var(--border); }
+.tutorial-shapes { display: flex; gap: 5px; }
+.tutorial-shape { width: 22px; height: 18px; border: 1px solid var(--border); background: var(--bg-2); }
+.tutorial-shape.round { border-radius: 999px; }
+.tutorial-shape.diamond { transform: rotate(45deg); width: 17px; height: 17px; margin-left: 2px; }
+.tutorial-swatches { display: flex; gap: 5px; }
+.tutorial-swatch { width: 22px; height: 18px; border-radius: 4px; border: 1px solid var(--border); }
+.tutorial-swatch.a { background: #8b5cf6; }
+.tutorial-swatch.b { background: #14b8a6; }
+.tutorial-swatch.c { background: #f59e0b; }
+.tutorial-template-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+.tutorial-template { height: 46px; border-radius: 5px; background: var(--bg-2); border: 1px solid var(--border); position: relative; }
+.tutorial-template::before, .tutorial-template::after {
+  content: "";
+  position: absolute;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+}
+.tutorial-template::before { width: 34px; height: 12px; left: 12px; top: 8px; }
+.tutorial-template::after { width: 54px; height: 10px; left: 12px; top: 26px; }
+.tutorial-export-icons {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 14px;
+}
+.tutorial-file {
+  height: 42px;
+  display: grid; place-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-weight: 650;
+  font-size: 11px;
+}
+.tutorial-helper-list { padding: 12px; display: grid; gap: 7px; }
+.tutorial-helper {
+  display: flex; align-items: center; gap: 7px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 5px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 10.5px;
+}
+.tutorial-helper .kbd { margin-left: auto; }
+.tutorial-footer-note {
+  padding: 0 16px 16px;
+  color: var(--text-3);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
 /* ============================================================
    COMMAND PALETTE
    ============================================================ */
@@ -982,12 +1444,17 @@ body.focus-mode .canvas-toolbar:hover { opacity: 1; }
   :root { --left-w: 280px; --right-w: 240px; }
   .right-panel { display: none; }
   .workspace { grid-template-columns: var(--rail-w) var(--left-w) 1fr 0; }
+  .tutorial-hero { grid-template-columns: 1fr; }
+  .tutorial-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .left-panel { display: none; }
   .workspace { grid-template-columns: var(--rail-w) 0 1fr 0; }
   .menu-btn span:not(.label) { display: none; }
   .brand-name { display: none; }
+  .tutorial-btn { width: 32px; padding: 0; justify-content: center; }
+  .tutorial-btn .tutorial-label { display: none; }
+  .tutorial-card { grid-template-columns: 1fr; }
 }
 
 /* Helpers */
@@ -1045,6 +1512,10 @@ body.focus-mode .canvas-toolbar:hover { opacity: 1; }
     <button class="menu-btn" data-menu="file" aria-haspopup="true">File</button>
     <button class="menu-btn" data-menu="edit" aria-haspopup="true">Edit</button>
     <button class="menu-btn" data-menu="view" aria-haspopup="true">View</button>
+    <button class="btn-secondary tutorial-btn" id="tutorialBtn" title="mermaid.tools v1.1 tutorial" aria-label="Tutorial">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 6h8M8 10h8M8 14h5"/></svg>
+      <span class="tutorial-label">Tutorial</span>
+    </button>
 
     <div class="tb-divider"></div>
 
@@ -1113,6 +1584,7 @@ body.focus-mode .canvas-toolbar:hover { opacity: 1; }
     <section class="center canvas-bg-grid" id="centerArea">
       <div class="canvas" id="canvas" aria-label="Diagram canvas"></div>
       <div class="stale-badge" id="staleBadge">⚠ Stale — last successful render shown</div>
+      <button class="hybrid-badge" id="hybridBadge" type="button" title="Hybrid layout is active">Hybrid</button>
 
       <div class="canvas-toolbar" role="toolbar" aria-label="Canvas controls">
         <button class="icon-btn" id="zoomOut" title="Zoom out (-)" aria-label="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg></button>
@@ -1124,6 +1596,9 @@ body.focus-mode .canvas-toolbar:hover { opacity: 1; }
         <button class="icon-btn" id="zoomCenter" title="Center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></button>
         <span class="div"></span>
         <button class="icon-btn" id="focusBtn" title="Focus mode" aria-label="Focus mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8S2 12 2 12z"/></svg></button>
+        <button class="icon-btn" id="visualEditBtn" title="Visual edit mode" aria-label="Visual edit mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+        <button class="icon-btn visual-tool" id="addNodeBtn" title="Add person" aria-label="Add person"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="7" width="10" height="10" rx="2"/><path d="M19 8v8M15 12h8"/></svg></button>
+        <button class="icon-btn visual-tool" id="connectBtn" title="Connect nodes (C)" aria-label="Connect nodes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6"/></svg></button>
         <button class="icon-btn" id="fullscreenBtn" title="Fullscreen canvas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg></button>
         <button class="icon-btn" id="lockBtn" title="Lock canvas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
       </div>
@@ -1368,6 +1843,8 @@ async function copyToClipboard(text) {
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
+/** Escape a string for use inside a RegExp. */
+const escapeRegExp = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 /** Compute approx WCAG contrast ratio between two hex colors. */
 function contrastRatio(c1, c2) {
   const lum = c => {
@@ -1430,6 +1907,9 @@ const store = createStore({
   engine: 'dagre',
   spacing: { rank: 80, node: 40, edge: 30, subgraph: 20, padding: 20, margin: 16 },
   curve: 'basis',
+  visualEditMode: false,
+  hybridLayout: false,
+  hybridDepth: 1,
   edgeStyle: { width: 1.5, color: '', dash: 'solid', arrowSize: 'medium' },
   nodeDefaults: { borderWidth: 1, borderRadius: 4, fontSize: 14, padding: 12 },
   canvas: { bg: 'grid', bgColor: '', gridSize: 18 },
@@ -1440,6 +1920,11 @@ const store = createStore({
   wordWrap: false,
   prefs: {},
 });
+
+let visualTool = null;
+let connectSourceId = null;
+let pendingInlineEditId = null;
+let lastHybridResult = { enabled: false, applied: false, code: '', reason: '' };
 
 // Logging
 const logs = [];
@@ -1494,6 +1979,7 @@ function autosave() {
     customTheme: s.customTheme, direction: s.direction, overrideDirection: s.overrideDirection,
     engine: s.engine, spacing: s.spacing, curve: s.curve, edgeStyle: s.edgeStyle,
     nodeDefaults: s.nodeDefaults, canvas: s.canvas, panels: s.panels, org: s.org,
+    visualEditMode: s.visualEditMode, hybridLayout: s.hybridLayout, hybridDepth: s.hybridDepth,
     uiScale: s.uiScale, wordWrap: s.wordWrap, savedAt: Date.now(),
   });
   const sb = $('#sbSaved'); if (sb) sb.textContent = 'Saved ' + fmtTime(Date.now());
@@ -1670,7 +2156,12 @@ const ctxRoot = $('#ctxMenuRoot');
 /** Show a context menu at clientX/clientY. items: [{label, icon, danger, onClick} | 'sep']. */
 function showContextMenu(x, y, items) {
   hideContextMenu();
-  const el = h('div', { class: 'ctx-menu' });
+  const el = h('div', {
+    class: 'ctx-menu',
+    onmousedown: e => e.stopPropagation(),
+    onclick: e => e.stopPropagation(),
+    oncontextmenu: e => e.preventDefault(),
+  });
   for (const it of items) {
     if (it === 'sep') { el.appendChild(h('div', { class: 'ctx-sep' })); continue; }
     el.appendChild(h('div', { class: `ctx-item${it.danger ? ' danger' : ''}`,
@@ -2080,11 +2571,182 @@ function configureMermaid() {
 }
 
 /** Inject %%{init}%% directive into code if user has overrides. */
+function isFlowchartLike(type) {
+  return type === 'flowchart' || type === 'graph';
+}
+function buildGraphMaps(parsed) {
+  const children = new Map();
+  const parents = new Map();
+  for (const id of parsed.nodes.keys()) {
+    children.set(id, []);
+    parents.set(id, []);
+  }
+  for (const e of parsed.edges) {
+    if (!children.has(e.from)) children.set(e.from, []);
+    if (!parents.has(e.to)) parents.set(e.to, []);
+    children.get(e.from).push(e.to);
+    parents.get(e.to).push(e.from);
+  }
+  return { children, parents };
+}
+function analyzeHybridLayout(parsed, depth = 1) {
+  const parsedDepth = Number.parseInt(depth, 10);
+  const managerDepth = Math.max(0, Number.isFinite(parsedDepth) ? parsedDepth : 1);
+  const { children, parents } = buildGraphMaps(parsed);
+  const roots = [...parsed.nodes.keys()].filter(id => !(parents.get(id) || []).length);
+  const depths = new Map();
+  const q = roots.map(id => [id, 0]);
+  for (const [id] of q) depths.set(id, 0);
+  while (q.length) {
+    const [id, d] = q.shift();
+    for (const child of children.get(id) || []) {
+      if (!depths.has(child) || d + 1 < depths.get(child)) {
+        depths.set(child, d + 1);
+        q.push([child, d + 1]);
+      }
+    }
+  }
+  const managers = [...parsed.nodes.keys()].filter(id => depths.get(id) === managerDepth && (children.get(id) || []).length);
+  const subordinateWarnings = [];
+  for (const manager of managers) {
+    for (const child of children.get(manager) || []) {
+      if ((children.get(child) || []).length) subordinateWarnings.push(child);
+    }
+  }
+  return { managerDepth, children, parents, roots, depths, managers, subordinateWarnings };
+}
+function formatEdgeLine(edge) {
+  return edge.label ? `${edge.from} ${edge.op}|${edge.label}| ${edge.to}` : `${edge.from} ${edge.op} ${edge.to}`;
+}
+function clusterId(prefix, id) {
+  return `${prefix}_${String(id).replace(/[^\w]/g, '_')}`;
+}
+function applyHybridLayout(code, depth = 1) {
+  lastHybridResult = { enabled: true, applied: false, code, reason: '' };
+  try {
+    const parsed = parseDiagram(code);
+    if (!isFlowchartLike(parsed.type)) {
+      lastHybridResult.reason = 'Hybrid layout is only available for flowchart and graph diagrams.';
+      return code;
+    }
+    const analysis = analyzeHybridLayout(parsed, depth);
+    if (!analysis.managers.length) {
+      lastHybridResult.reason = 'Hybrid layout needs a manager tier with at least one direct report.';
+      return code;
+    }
+
+    const lines = code.split('\n');
+    const initLines = lines.filter(l => /^\s*%%\{/.test(l));
+    const preservedLines = lines.filter(l => /^\s*(style|classDef|class|linkStyle|click|accTitle|accDescr)\b/.test(l));
+    const headerMatch = code.match(/^\s*(flowchart|graph)\b/i);
+    const header = `${headerMatch?.[1] || 'flowchart'} TB`;
+    const out = [...initLines, header, ''];
+    const includedNodes = new Set();
+    const placedEdges = new Set();
+    const byLine = (a, b) => (parsed.nodes.get(a)?.line || 0) - (parsed.nodes.get(b)?.line || 0);
+    const nodeLine = id => {
+      const n = parsed.nodes.get(id);
+      return formatNodeDefinition(id, n?.label || id, n?.shape || 'rect');
+    };
+
+    const topNodes = [...parsed.nodes.keys()]
+      .filter(id => (analysis.depths.get(id) ?? Infinity) < analysis.managerDepth)
+      .sort(byLine);
+    for (const id of topNodes) {
+      out.push(`  ${nodeLine(id)}`);
+      includedNodes.add(id);
+    }
+    if (topNodes.length) out.push('');
+
+    out.push(`  subgraph ${clusterId('hybrid_managers', analysis.managerDepth)} [" "]`);
+    out.push('    direction LR');
+    for (const manager of analysis.managers.sort(byLine)) {
+      const teamId = clusterId('hybrid_team', manager);
+      out.push(`    subgraph ${teamId} [" "]`);
+      out.push('      direction TB');
+      if (!includedNodes.has(manager)) {
+        out.push(`      ${nodeLine(manager)}`);
+        includedNodes.add(manager);
+      }
+      const directChildren = [...new Set(analysis.children.get(manager) || [])].sort(byLine);
+      for (const child of directChildren) {
+        if (!includedNodes.has(child)) {
+          out.push(`      ${nodeLine(child)}`);
+          includedNodes.add(child);
+        }
+      }
+      for (const edge of parsed.edges.filter(e => e.from === manager && directChildren.includes(e.to))) {
+        out.push(`      ${formatEdgeLine(edge)}`);
+        placedEdges.add(edgeKey(edge));
+      }
+      out.push('    end');
+    }
+    out.push('  end', '');
+
+    const extraNodes = [...parsed.nodes.keys()].filter(id => !includedNodes.has(id)).sort(byLine);
+    for (const id of extraNodes) {
+      out.push(`  ${nodeLine(id)}`);
+      includedNodes.add(id);
+    }
+    if (extraNodes.length) out.push('');
+
+    for (const edge of parsed.edges) {
+      if (placedEdges.has(edgeKey(edge))) continue;
+      out.push(`  ${formatEdgeLine(edge)}`);
+    }
+
+    out.push('', `  style ${clusterId('hybrid_managers', analysis.managerDepth)} fill:none,stroke:none`);
+    for (const manager of analysis.managers) out.push(`  style ${clusterId('hybrid_team', manager)} fill:none,stroke:none`);
+    if (preservedLines.length) out.push('', ...preservedLines);
+
+    const transformed = out.join('\n').replace(/\n{3,}/g, '\n\n');
+    lastHybridResult = { enabled: true, applied: true, code: transformed, reason: '' };
+    return transformed;
+  } catch (e) {
+    lastHybridResult = { enabled: true, applied: false, code, reason: e.message || 'Hybrid layout transform failed.' };
+    console.warn('Hybrid layout skipped:', e);
+    return code;
+  }
+}
+function updateHybridBadge() {
+  const badge = $('#hybridBadge');
+  if (!badge) return;
+  const on = !!store.state.hybridLayout;
+  badge.classList.toggle('show', on);
+  badge.classList.toggle('warn', on && !lastHybridResult.applied);
+  badge.textContent = on && !lastHybridResult.applied ? 'Hybrid unavailable' : 'Hybrid';
+  badge.title = on && lastHybridResult.reason ? lastHybridResult.reason : 'Hybrid layout is active';
+}
+function showHybridBadgeMenu(e) {
+  e.preventDefault();
+  showContextMenu(e.clientX, e.clientY, [
+    { label: 'View transformed code', icon: ICON.search, onClick: showTransformedCodeModal },
+    { label: 'Toggle off', icon: ICON.x, onClick: () => { const pane = $('.panel-tab[data-ptab="layout"]'); store.set({ hybridLayout: false }); renderInspector(); if (pane) buildLayoutTab(pane); scheduleRender(); } },
+  ]);
+}
+function showTransformedCodeModal() {
+  const transformed = lastHybridResult.code || applyHybridLayout(store.state.code, store.state.hybridDepth);
+  const body = h('div', { class: 'modal-body' },
+    h('pre', { class: 'code-preview' }, transformed)
+  );
+  openModal({
+    title: lastHybridResult.applied ? 'Transformed Hybrid Code' : 'Hybrid Layout Preview',
+    body,
+    footer: close => h('div', { class: 'modal-footer' },
+      h('button', { class: 'btn-secondary', onclick: () => copyToClipboard(transformed).then(() => toast('Copied', { type: 'success' })) }, 'Copy code'),
+      h('button', { class: 'btn-primary', onclick: close }, 'Done')
+    )
+  });
+}
 function applyDirectives(code) {
   const s = store.state;
+  lastHybridResult = { enabled: false, applied: false, code: '', reason: '' };
   if (s.overrideDirection) {
     // Replace direction in flowchart/graph header
     code = code.replace(/^(\s*)(flowchart|graph)\s+(TB|BT|LR|RL|TD)/m, `$1$2 ${s.direction}`);
+  }
+  if (s.hybridLayout) {
+    code = applyHybridLayout(code, s.hybridDepth);
   }
   return code;
 }
@@ -2116,6 +2778,14 @@ async function render(force = false) {
     editor.clearError();
     setupSvgInteractions();
     initPanZoom();
+    updateVisualEditUi();
+    restoreRenderedSelection();
+    updateHybridBadge();
+    if (pendingInlineEditId) {
+      const idToEdit = pendingInlineEditId;
+      pendingInlineEditId = null;
+      setTimeout(() => openInlineEditor(idToEdit), 80);
+    }
     const ms = performance.now() - t0;
     renderCount.val++;
     sb.classList.remove('warn','err');
@@ -2147,6 +2817,12 @@ function setupSvgInteractions() {
   svg.addEventListener('click', (e) => {
     const node = e.target.closest('g.node');
     const edge = e.target.closest('.edgeLabel') || e.target.closest('.edgePath');
+    if (visualTool === 'connect') {
+      e.preventDefault();
+      if (node) handleConnectNodeClick(node);
+      else { connectSourceId = null; highlightConnectSource(); }
+      return;
+    }
     if (node) selectNode(node);
     else if (edge) selectEdge(edge);
     else clearSelection();
@@ -2155,8 +2831,16 @@ function setupSvgInteractions() {
     const node = e.target.closest('g.node'); if (!node) return;
     e.preventDefault();
     const id = nodeId(node);
+    selectNode(node);
     showContextMenu(e.clientX, e.clientY, [
-      { label: 'Edit label', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>', onClick: () => editNodeLabel(id) },
+      { label: 'Edit label', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>', onClick: () => openInlineEditor(node) },
+      { label: 'Add subordinate', icon: ICON.plus, onClick: () => addSubordinate(id) },
+      { label: 'Add same level', icon: ICON.plus, onClick: () => addSameLevelPerson(id) },
+      { label: 'Add manager', icon: ICON.plus, onClick: () => addManagerForNode(id) },
+      'sep',
+      { label: 'Promote', icon: ICON.arrowL, onClick: () => promotePerson(id) },
+      { label: 'Demote under...', icon: ICON.arrowR, onClick: () => openDemoteModal(id) },
+      'sep',
       { label: 'Duplicate', icon: ICON.copy, onClick: () => duplicateNode(id) },
       { label: 'Copy ID', icon: ICON.copy, onClick: () => { copyToClipboard(id); toast('ID copied'); } },
       { label: 'Focus subtree', onClick: () => focusOnNode(id) },
@@ -2165,17 +2849,233 @@ function setupSvgInteractions() {
     ]);
   });
   svg.addEventListener('dblclick', (e) => {
-    const node = e.target.closest('g.node'); if (!node) return;
-    focusOnNode(nodeId(node));
+    const node = e.target.closest('g.node');
+    e.preventDefault();
+    if (node) {
+      if (store.state.visualEditMode) openInlineEditor(node);
+      else focusOnNode(nodeId(node));
+      return;
+    }
+    if (store.state.visualEditMode) openAddNodePopover(e.clientX, e.clientY);
+  });
+  highlightConnectSource();
+}
+
+function updateVisualEditUi() {
+  const on = !!store.state.visualEditMode;
+  if (!on) {
+    visualTool = null;
+    connectSourceId = null;
+  }
+  document.body.classList.toggle('visual-edit-mode', on);
+  document.body.classList.toggle('connect-mode', visualTool === 'connect');
+  $('#visualEditBtn')?.classList.toggle('active', on);
+  $('#connectBtn')?.classList.toggle('active', visualTool === 'connect');
+  $('#addNodeBtn')?.classList.toggle('active', false);
+  highlightConnectSource();
+}
+function setVisualEditMode(on) {
+  store.set({ visualEditMode: !!on });
+  updateVisualEditUi();
+  renderInspector();
+}
+function setVisualTool(tool) {
+  if (!store.state.visualEditMode) store.set({ visualEditMode: true });
+  visualTool = visualTool === tool ? null : tool;
+  connectSourceId = null;
+  updateVisualEditUi();
+}
+function cancelTransientVisualEdit() {
+  removeFloatingEditors();
+  visualTool = null;
+  connectSourceId = null;
+  updateVisualEditUi();
+}
+function renderedNodeById(id) {
+  const nodes = $$('#canvas svg g.node');
+  return nodes.find(g => nodeId(g) === id)
+    || nodes.find(g => (g.id || '').includes(id))
+    || null;
+}
+function highlightConnectSource() {
+  $$('#canvas svg g.node').forEach(n => n.classList.remove('connect-source'));
+  if (!connectSourceId) return;
+  renderedNodeById(connectSourceId)?.classList.add('connect-source');
+}
+function handleConnectNodeClick(node) {
+  const id = nodeId(node);
+  selectNode(node);
+  if (!connectSourceId) {
+    connectSourceId = id;
+    highlightConnectSource();
+    toast('Source selected', { message: 'Click another node to connect it.', type: 'info', duration: 1600 });
+    return;
+  }
+  if (connectSourceId === id) {
+    connectSourceId = null;
+    highlightConnectSource();
+    return;
+  }
+  applyCodeChange(CodeMutator.addEdge(store.state.code, connectSourceId, id));
+  toast('Connected nodes', { type: 'success' });
+  connectSourceId = null;
+  highlightConnectSource();
+}
+function removeFloatingEditors() {
+  $$('.inline-editor, .floating-popover').forEach(el => el.remove());
+}
+function openInlineEditor(nodeOrId) {
+  const explicitId = typeof nodeOrId === 'string' ? nodeOrId : null;
+  const node = explicitId ? renderedNodeById(explicitId) : nodeOrId;
+  if (!node) return;
+  removeFloatingEditors();
+  const id = explicitId || nodeId(node);
+  const parsed = parseDiagram(store.state.code);
+  const label = parsed.nodes.get(id)?.label || id;
+  const rect = node.getBoundingClientRect();
+  const canvasRect = $('#canvas').getBoundingClientRect();
+  const overlay = h('div', { class: 'inline-editor', style: {
+    left: `${clamp(rect.left - canvasRect.left, 4, Math.max(4, canvasRect.width - 124))}px`,
+    top: `${clamp(rect.top - canvasRect.top, 4, Math.max(4, canvasRect.height - 40))}px`,
+    width: `${Math.max(120, rect.width)}px`,
+    height: `${Math.max(34, rect.height)}px`,
+  }});
+  const lineCount = Math.max(1, String(label).split('\n').length);
+  const input = h(lineCount > 1 ? 'textarea' : 'input', { rows: lineCount, type: 'text', 'aria-label': 'Node label' });
+  input.value = label;
+  const lineHeight = clamp((rect.height - 8) / lineCount, 15, 19);
+  if (lineCount > 1) {
+    input.style.height = `${Math.min(Math.max(22, lineCount * lineHeight), Math.max(22, rect.height - 8))}px`;
+    input.style.lineHeight = `${lineHeight}px`;
+  }
+  overlay.appendChild(input);
+  $('#canvas').appendChild(overlay);
+  let done = false;
+  const close = () => { done = true; overlay.remove(); };
+  const commit = () => {
+    if (done) return;
+    const next = input.value.trim();
+    close();
+    if (next && next !== label) editNodeLabel(id, next);
+  };
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+  });
+  input.addEventListener('blur', commit);
+  requestAnimationFrame(() => {
+    input.focus();
+    input.select();
+    input.scrollLeft = 0;
+    input.scrollTop = 0;
+  });
+}
+function openAddNodePopover(x = innerWidth / 2, y = innerHeight / 2, parentId = null) {
+  removeFloatingEditors();
+  const input = h('input', { class: 'input', placeholder: parentId ? 'Subordinate name' : 'Person name', 'aria-label': 'Person name' });
+  const pop = h('div', { class: 'floating-popover' },
+    input,
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn-secondary', onclick: () => pop.remove() }, 'Cancel'),
+      h('button', { class: 'btn-primary', onclick: () => commit() }, 'Add')
+    )
+  );
+  function commit() {
+    const label = input.value.trim() || 'New person';
+    const id = makeUniqueNodeId();
+    applyCodeChange(CodeMutator.addNode(store.state.code, id, label, parentId));
+    store.set({ selected: { type: 'node', id } });
+    pop.remove();
+  }
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') commit();
+    if (e.key === 'Escape') pop.remove();
+  });
+  document.body.appendChild(pop);
+  const r = pop.getBoundingClientRect();
+  pop.style.left = `${clamp(x, 8, innerWidth - r.width - 8)}px`;
+  pop.style.top = `${clamp(y, 8, innerHeight - r.height - 8)}px`;
+  requestAnimationFrame(() => input.focus());
+}
+function addPlaceholderNode(parentId = null, label = 'New person') {
+  const id = makeUniqueNodeId();
+  applyCodeChange(CodeMutator.addNode(store.state.code, id, label, parentId));
+  store.set({ selected: { type: 'node', id } });
+  pendingInlineEditId = id;
+}
+function addSubordinate(id) {
+  addPlaceholderNode(id, 'New subordinate');
+}
+function addSameLevelPerson(id) {
+  const parent = parseDiagram(store.state.code).edges.find(e => e.to === id)?.from || null;
+  addPlaceholderNode(parent, 'New peer');
+}
+function addManagerForNode(id) {
+  const managerId = makeUniqueNodeId('manager_');
+  applyCodeChange(CodeMutator.addManager(store.state.code, id, managerId, 'New manager'));
+  store.set({ selected: { type: 'node', id: managerId } });
+  pendingInlineEditId = managerId;
+  toast('Manager added', { type: 'success' });
+}
+function promotePerson(id) {
+  const before = store.state.code;
+  const next = CodeMutator.promoteNode(before, id);
+  if (next === before) return toast('Already at top level', { type: 'info' });
+  applyCodeChange(next);
+  store.set({ selected: { type: 'node', id } });
+  toast('Promoted', { type: 'success' });
+}
+function descendantsOf(parsed, id) {
+  const { children } = buildGraphMaps(parsed);
+  const out = new Set();
+  const stack = [...(children.get(id) || [])];
+  while (stack.length) {
+    const cur = stack.pop();
+    if (out.has(cur)) continue;
+    out.add(cur);
+    stack.push(...(children.get(cur) || []));
+  }
+  return out;
+}
+function openDemoteModal(id) {
+  const parsed = parseDiagram(store.state.code);
+  const node = parsed.nodes.get(id);
+  if (!node) return toast('Select a person first', { type: 'warn' });
+  const blocked = descendantsOf(parsed, id);
+  blocked.add(id);
+  const candidates = [...parsed.nodes.values()].filter(n => !blocked.has(n.id));
+  if (!candidates.length) return toast('No available manager', { type: 'warn' });
+  const currentParents = new Set(parsed.edges.filter(e => e.to === id).map(e => e.from));
+  const siblingIds = parsed.edges.filter(e => currentParents.has(e.from) && e.to !== id).map(e => e.to);
+  const preferred = candidates.find(n => siblingIds.includes(n.id)) || candidates.find(n => !currentParents.has(n.id)) || candidates[0];
+  const select = mkSelect(candidates.map(n => [n.id, n.label || n.id]), preferred.id, () => {});
+  const body = h('div', { class: 'modal-body' },
+    h('div', { class: 'row' }, h('label', null, 'Person'), h('div', { class: 'ctl mono', style: { fontSize: '12px', color: 'var(--text-2)' } }, node.label || id)),
+    h('div', { class: 'row' }, h('label', null, 'New manager'), h('div', { class: 'ctl' }, select))
+  );
+  openModal({
+    title: 'Demote Person',
+    body,
+    footer: close => h('div', { class: 'modal-footer' },
+      h('button', { class: 'btn-secondary', onclick: close }, 'Cancel'),
+      h('button', { class: 'btn-primary', onclick: () => {
+        applyCodeChange(CodeMutator.changeParent(store.state.code, id, select.value));
+        store.set({ selected: { type: 'node', id } });
+        toast('Demoted', { type: 'success' });
+        close();
+      } }, 'Demote')
+    )
   });
 }
 
 /** Get the mermaid-assigned id of a node group. */
 function nodeId(g) {
+  const dataId = g.getAttribute?.('data-id') || g.getAttribute?.('data-node-id');
+  if (dataId) return dataId;
   const id = g.id || '';
-  // Mermaid ids look like "flowchart-XYZ-1"; strip prefix and trailing index
-  const m = id.match(/^flowchart-(.+?)-\d+$/) || id.match(/^(?:.+?)-(.+?)-\d+$/);
-  return m ? m[1] : id;
+  // Mermaid ids often include the render id before "flowchart-" and may omit a trailing index.
+  const m = id.match(/(?:^|.*-)flowchart-(.+)$/) || id.match(/^(?:.+?)-(.+?)-\d+$/);
+  return m ? m[1].replace(/-\d+$/, '') : id;
 }
 function clearSelection() {
   store.set({ selected: null });
@@ -2192,6 +3092,12 @@ function selectNode(g) {
 function selectEdge(g) {
   store.set({ selected: { type: 'edge' } });
   renderInspector();
+}
+function restoreRenderedSelection() {
+  $$('#canvas g.node').forEach(n => n.classList.remove('selected'));
+  const sel = store.state.selected;
+  if (sel?.type !== 'node') return;
+  renderedNodeById(sel.id)?.classList.add('selected');
 }
 
 // ============================================================
@@ -2228,37 +3134,182 @@ function zoomCenter(){ panZoomInstance?.center(); }
 // ============================================================
 // CODE-LEVEL OPS — edit nodes via source rewrite
 // ============================================================
-function editNodeLabel(id) {
-  const code = store.state.code;
-  const re = new RegExp(`(\\b${id}\\b)\\s*([\\[\\(\\{][^\\]\\)\\}\\n]*[\\]\\)\\}])`);
-  const m = code.match(re);
-  const cur = m ? m[2].slice(1, -1).replace(/^"|"$/g, '') : id;
-  const next = prompt('Node label', cur);
+function flowIndent(code) {
+  const line = code.split('\n').find(l => /^\s+[A-Za-z_][\w-]*(?:\s|[\[\(\{>])/.test(l));
+  return line ? (line.match(/^\s*/) || ['  '])[0] : '  ';
+}
+function formatNodeDefinition(id, label, shapeId = 'rect') {
+  const shape = NODE_SHAPE_BY_ID[shapeId] || NODE_SHAPE_BY_ID.rect;
+  return `${id}${shape.open}"${encodeMermaidLabel(label || id)}"${shape.close}`;
+}
+function findNodeDefinition(code, id) {
+  const lines = code.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    for (const def of extractNodeDefs(lines[i])) {
+      if (def.id === id) return { lineIndex: i, line: lines[i], def };
+    }
+  }
+  return null;
+}
+function replaceNodeDefinition(code, id, replacer) {
+  const hit = findNodeDefinition(code, id);
+  if (!hit) return null;
+  const lines = code.split('\n');
+  const { def, lineIndex } = hit;
+  lines[lineIndex] = lines[lineIndex].slice(0, def.start) + replacer(def) + lines[lineIndex].slice(def.end);
+  return lines.join('\n');
+}
+function makeUniqueNodeId(prefix = 'node_') {
+  const parsed = parseDiagram(store.state.code);
+  let id;
+  do { id = uid(prefix); } while (parsed.nodes.has(id));
+  return id;
+}
+function insertAfterLastEdge(code, line) {
+  const parsed = parseDiagram(code);
+  const lines = code.split('\n');
+  const lastEdgeLine = parsed.edges.reduce((max, e) => Math.max(max, e.line), 0);
+  if (lastEdgeLine > 0) {
+    lines.splice(lastEdgeLine, 0, line);
+    return lines.join('\n');
+  }
+  return code.trimEnd() + `\n${line}`;
+}
+function hasStandaloneNodeDefinition(code, id) {
+  return code.split('\n').some(line => !findEdgeExpression(line) && extractNodeDefs(line).some(def => def.id === id));
+}
+function ensureStandaloneNodeDefinition(code, id, node = null) {
+  if (hasStandaloneNodeDefinition(code, id)) return code;
+  return code.trimEnd() + `\n${flowIndent(code)}${formatNodeDefinition(id, node?.label || id, node?.shape || 'rect')}`;
+}
+function edgeKey(e) {
+  return `${e.from}\u0000${e.op}\u0000${e.label}\u0000${e.to}`;
+}
+const CodeMutator = {
+  renameNode(code, id, label) {
+    const parsed = parseDiagram(code);
+    const current = parsed.nodes.get(id);
+    const next = replaceNodeDefinition(code, id, def => formatNodeDefinition(id, label, def.shape || current?.shape || 'rect'));
+    if (next != null) return next;
+    return code.trimEnd() + `\n${flowIndent(code)}${formatNodeDefinition(id, label, 'rect')}`;
+  },
+  changeShape(code, id, shapeId) {
+    const parsed = parseDiagram(code);
+    const label = parsed.nodes.get(id)?.label || id;
+    const next = replaceNodeDefinition(code, id, () => formatNodeDefinition(id, label, shapeId));
+    if (next != null) return next;
+    return code.trimEnd() + `\n${flowIndent(code)}${formatNodeDefinition(id, label, shapeId)}`;
+  },
+  addNode(code, id, label, parentId = null) {
+    let next = code.trimEnd() || 'flowchart TB';
+    const indent = flowIndent(next);
+    next += `\n${indent}${formatNodeDefinition(id, label || 'New person', 'rect')}`;
+    if (parentId) next += `\n${indent}${parentId} --> ${id}`;
+    return next;
+  },
+  addEdge(code, fromId, toId, label = '') {
+    const indent = flowIndent(code);
+    const cleanLabel = String(label || '').trim().replace(/\|/g, '/');
+    const edge = cleanLabel
+      ? `${indent}${fromId} -->|"${encodeMermaidLabel(cleanLabel)}"| ${toId}`
+      : `${indent}${fromId} --> ${toId}`;
+    return insertAfterLastEdge(code, edge);
+  },
+  addManager(code, id, managerId, label = 'New manager') {
+    const parsed = parseDiagram(code);
+    const parents = [...new Set(parsed.edges.filter(e => e.to === id).map(e => e.from))];
+    let next = code.trimEnd() + `\n${flowIndent(code)}${formatNodeDefinition(managerId, label, 'rect')}`;
+    next = ensureStandaloneNodeDefinition(next, id, parsed.nodes.get(id));
+    next = this.removeIncomingEdges(next, id);
+    if (parents.length) {
+      for (const parent of parents) next = this.addEdge(next, parent, managerId);
+    }
+    next = this.addEdge(next, managerId, id);
+    return next;
+  },
+  removeIncomingEdges(code, id) {
+    const next = [];
+    const preserveDefs = [];
+    for (const line of code.split('\n')) {
+      const expr = findEdgeExpression(line);
+      if (!expr) { next.push(line); continue; }
+      const targets = splitEndpointList(expr.right);
+      const kept = targets.filter(t => parseEndpointToken(t)?.id !== id);
+      if (kept.length === targets.length) { next.push(line); continue; }
+      if (!kept.length) {
+        preserveDefs.push(...extractNodeDefs(line).filter(def => def.id !== id));
+        continue;
+      }
+      const indent = line.match(/^\s*/)?.[0] || '';
+      const label = expr.label ? `|${expr.label}|` : '';
+      next.push(`${indent}${expr.left.trim()} ${expr.op}${label} ${kept.join(' & ')}`);
+    }
+    return preserveDefs.reduce((out, def) => ensureStandaloneNodeDefinition(out, def.id, def), next.join('\n'));
+  },
+  changeParent(code, id, parentId = '') {
+    const parsed = parseDiagram(code);
+    let next = ensureStandaloneNodeDefinition(code, id, parsed.nodes.get(id));
+    next = this.removeIncomingEdges(next, id);
+    if (parentId) next = this.addEdge(next, parentId, id);
+    return next;
+  },
+  promoteNode(code, id) {
+    const parsed = parseDiagram(code);
+    const parents = [...new Set(parsed.edges.filter(e => e.to === id).map(e => e.from))];
+    if (!parents.length) return code;
+    const grandparents = [...new Set(parsed.edges.filter(e => parents.includes(e.to)).map(e => e.from))];
+    let next = ensureStandaloneNodeDefinition(code, id, parsed.nodes.get(id));
+    next = this.removeIncomingEdges(next, id);
+    for (const grandparent of grandparents) next = this.addEdge(next, grandparent, id);
+    return next;
+  },
+  deleteNode(code, id) {
+    const re = new RegExp(`\\b${escapeRegExp(id)}\\b`);
+    return code.split('\n').filter(l => !re.test(l)).join('\n');
+  },
+  duplicateNode(code, id) {
+    const parsed = parseDiagram(code);
+    const node = parsed.nodes.get(id);
+    if (!node) return code;
+    const newId = makeUniqueNodeId(`${id}_copy_`);
+    return code.trimEnd() + `\n${flowIndent(code)}${formatNodeDefinition(newId, `${node.label || id} copy`, node.shape || 'rect')}`;
+  },
+  setStyle(code, id, fill, stroke = '') {
+    const cleanFill = fill || '#ffffff';
+    const cleanStroke = stroke || fill || '#5b5bd6';
+    const styleLine = `${flowIndent(code)}style ${id} fill:${cleanFill},stroke:${cleanStroke}`;
+    const lines = code.split('\n');
+    const re = new RegExp(`^\\s*style\\s+${escapeRegExp(id)}\\b`);
+    const idx = lines.findIndex(l => re.test(l));
+    if (idx >= 0) lines[idx] = styleLine;
+    else lines.push(styleLine);
+    return lines.join('\n');
+  },
+};
+function editNodeLabel(id, nextLabel = undefined) {
+  let next = nextLabel;
+  if (next == null) {
+    const cur = parseDiagram(store.state.code).nodes.get(id)?.label || id;
+    next = prompt('Node label', cur);
+  }
   if (next == null) return;
-  let newCode;
-  if (m) newCode = code.replace(re, `$1["${next.replace(/"/g, '\\"')}"]`);
-  else newCode = code + `\n  ${id}["${next.replace(/"/g, '\\"')}"]`;
-  applyCodeChange(newCode);
+  applyCodeChange(CodeMutator.renameNode(store.state.code, id, next));
 }
 function deleteNode(id) {
-  const code = store.state.code;
-  const lines = code.split('\n').filter(l => !new RegExp(`\\b${id}\\b`).test(l));
-  applyCodeChange(lines.join('\n'));
+  applyCodeChange(CodeMutator.deleteNode(store.state.code, id));
   toast(`Deleted ${id}`, { type: 'success' });
 }
 function duplicateNode(id) {
-  const code = store.state.code;
-  const re = new RegExp(`(^\\s*)(${id})(\\s*[\\[\\(\\{][^\\n]+)`, 'm');
-  const m = code.match(re);
-  if (!m) return toast('Cannot duplicate', { type: 'warn' });
-  const newId = id + '_copy';
-  applyCodeChange(code + `\n${m[1]}${newId}${m[3]}`);
+  const before = store.state.code;
+  const next = CodeMutator.duplicateNode(before, id);
+  if (next === before) return toast('Cannot duplicate', { type: 'warn' });
+  applyCodeChange(next);
 }
 function applyCodeChange(newCode) {
-  // Normalize literal \n sequences (from templates/pastes) into real newlines
-  newCode = newCode.replace(/\\n/g, '\n');
+  newCode = String(newCode).replace(/\r\n/g, '\n');
+  if (!newCode.includes('\n') && newCode.includes('\\n')) newCode = newCode.replace(/\\n/g, '\n');
   store.set({ code: newCode });
-  editor.setValue(newCode);
+  editor?.setValue(newCode);
   snapshotForUndo(newCode);
   scheduleRender();
 }
@@ -2278,14 +3329,13 @@ function focusOnNode(id) {
 }
 function relatedNodes(id) {
   const result = new Set([id]);
-  const code = store.state.code;
-  const edges = [...code.matchAll(/(\w[\w-]*)\s*(?:--+>|---|==+>|===)\s*(?:\|[^|]+\|)?\s*(\w[\w-]*)/g)];
+  const edges = parseDiagram(store.state.code).edges;
   let changed = true;
   while (changed) {
     changed = false;
-    for (const [, a, b] of edges) {
-      if (result.has(a) && !result.has(b)) { result.add(b); changed = true; }
-      if (result.has(b) && !result.has(a)) { result.add(a); changed = true; }
+    for (const { from, to } of edges) {
+      if (result.has(from) && !result.has(to)) { result.add(to); changed = true; }
+      if (result.has(to) && !result.has(from)) { result.add(from); changed = true; }
     }
   }
   return result;
@@ -2298,24 +3348,156 @@ function clearFocusMode() {
 // ============================================================
 // PARSE HELPERS — extract nodes/edges from code (lightweight)
 // ============================================================
+const EDGE_OPERATORS = ['<-->', '<==>', '-.->', '-->', '---', '==>', '===', '<--', '<==', '.->'];
+const NODE_SHAPE_PATTERNS = [
+  { id: 'dcircle', open: '(((', close: ')))' },
+  { id: 'stadium', open: '([', close: '])' },
+  { id: 'circle', open: '((', close: '))' },
+  { id: 'sub', open: '[[', close: ']]' },
+  { id: 'cyl', open: '[(', close: ')]' },
+  { id: 'hex', open: '{{', close: '}}' },
+  { id: 'parallel', open: '[/', close: '/]' },
+  { id: 'trap', open: '[/', close: '\\]' },
+  { id: 'asym', open: '>', close: ']' },
+  { id: 'rect', open: '[', close: ']' },
+  { id: 'round', open: '(', close: ')' },
+  { id: 'diamond', open: '{', close: '}' },
+];
+const NODE_SHAPE_BY_ID = Object.fromEntries(NODE_SHAPE_PATTERNS.map(s => [s.id, s]));
+for (const sh of SHAPES) {
+  if (!NODE_SHAPE_BY_ID[sh.id]) NODE_SHAPE_BY_ID[sh.id] = { id: sh.id, open: sh.syntax[0], close: sh.syntax[1] };
+}
+
+function decodeMermaidLabel(label) {
+  return String(label || '')
+    .trim()
+    .replace(/^"|"$/g, '')
+    .replace(/\\"/g, '"')
+    .replace(/\\n/g, '\n');
+}
+function encodeMermaidLabel(label) {
+  return String(label ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n/g, '\\n')
+    .replace(/"/g, '\\"');
+}
+function stripInlineComment(line) {
+  let quote = null;
+  for (let i = 0; i < line.length - 1; i++) {
+    const ch = line[i];
+    if ((ch === '"' || ch === "'") && line[i - 1] !== '\\') quote = quote === ch ? null : (quote || ch);
+    if (!quote && ch === '%' && line[i + 1] === '%') return line.slice(0, i);
+  }
+  return line;
+}
+function readNodeDefAt(text, start) {
+  const idMatch = text.slice(start).match(/^([A-Za-z_][\w-]*)/);
+  if (!idMatch) return null;
+  const id = idMatch[1];
+  if (MERMAID_KEYWORDS.includes(id)) return null;
+  let pos = start + id.length;
+  while (/\s/.test(text[pos] || '')) pos++;
+  for (const shape of NODE_SHAPE_PATTERNS) {
+    if (!text.startsWith(shape.open, pos)) continue;
+    const labelStart = pos + shape.open.length;
+    const labelEnd = text.indexOf(shape.close, labelStart);
+    if (labelEnd === -1) continue;
+    const rawLabel = text.slice(labelStart, labelEnd);
+    return {
+      id,
+      label: decodeMermaidLabel(rawLabel),
+      rawLabel,
+      shape: shape.id,
+      open: shape.open,
+      close: shape.close,
+      start,
+      end: labelEnd + shape.close.length,
+    };
+  }
+  return null;
+}
+function extractNodeDefs(line) {
+  const defs = [];
+  const clean = stripInlineComment(line);
+  for (let i = 0; i < clean.length; i++) {
+    if (i > 0 && /[\w-]/.test(clean[i - 1])) continue;
+    const def = readNodeDefAt(clean, i);
+    if (!def) continue;
+    defs.push(def);
+    i = Math.max(i, def.end - 1);
+  }
+  return defs;
+}
+function splitEndpointList(text) {
+  const out = [];
+  let buf = '';
+  let quote = null;
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if ((ch === '"' || ch === "'") && text[i - 1] !== '\\') quote = quote === ch ? null : (quote || ch);
+    if (!quote) {
+      if ('[({'.includes(ch)) depth++;
+      if ('])}'.includes(ch)) depth = Math.max(0, depth - 1);
+      if (ch === '&' && depth === 0) {
+        if (buf.trim()) out.push(buf.trim());
+        buf = '';
+        continue;
+      }
+    }
+    buf += ch;
+  }
+  if (buf.trim()) out.push(buf.trim());
+  return out;
+}
+function parseEndpointToken(token) {
+  const clean = token.trim().replace(/^[&\s]+|[&\s]+$/g, '');
+  if (!clean) return null;
+  const def = readNodeDefAt(clean, 0);
+  if (def) return def;
+  const m = clean.match(/^([A-Za-z_][\w-]*)\b/);
+  if (!m || MERMAID_KEYWORDS.includes(m[1])) return null;
+  return { id: m[1], label: m[1], shape: 'rect', start: 0, end: m[1].length };
+}
+function findEdgeExpression(line) {
+  const clean = stripInlineComment(line).trim();
+  if (!clean || /^(style|classDef|class|linkStyle|click|subgraph|end|direction)\b/.test(clean)) return null;
+  const opPart = EDGE_OPERATORS.map(escapeRegExp).join('|');
+  const re = new RegExp(`^(.*?)\\s*(${opPart})\\s*(?:\\|([^|]*)\\|)?\\s*(.*?)\\s*$`);
+  const m = clean.match(re);
+  if (!m) return null;
+  return { left: m[1], op: m[2], label: m[3] || '', right: m[4] };
+}
+function addParsedNode(out, id, label, line, shape = 'rect') {
+  if (!id) return;
+  const existing = out.nodes.get(id);
+  const cleanLabel = label ? decodeMermaidLabel(label) : id;
+  if (!existing) {
+    out.nodes.set(id, { id, label: cleanLabel || id, line, shape });
+    return;
+  }
+  if ((!existing.label || existing.label === existing.id) && cleanLabel && cleanLabel !== id) existing.label = cleanLabel;
+  if ((!existing.shape || existing.shape === 'rect') && shape) existing.shape = shape;
+  existing.line = Math.min(existing.line || line, line);
+}
 function parseDiagram(code) {
   const out = { nodes: new Map(), edges: [], type: detectType(code) };
   const lines = code.split('\n');
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (/^\s*%%/.test(line)) continue;
-    // node definitions: ID[label], ID(label), ID{label}
-    const ndef = [...line.matchAll(/\b([A-Za-z_][\w-]*)\s*([\[\(\{][^\]\)\}\n]+[\]\)\}])/g)];
-    for (const m of ndef) {
-      const id = m[1]; const label = m[2].slice(1, -1).replace(/^"|"$/g, '');
-      out.nodes.set(id, { id, label, line: i + 1 });
+    if (!/^\s*subgraph\b/.test(line)) {
+      for (const def of extractNodeDefs(line)) addParsedNode(out, def.id, def.label, i + 1, def.shape);
     }
-    // edges
-    const eds = [...line.matchAll(/(\b[A-Za-z_][\w-]*)\s*(--+>|---|==+>|===|-\.->|\.->|<--|<==|<-->)\s*(?:\|([^|]+)\|)?\s*(\b[A-Za-z_][\w-]*)/g)];
-    for (const m of eds) {
-      out.edges.push({ from: m[1], op: m[2], label: m[3] || '', to: m[4], line: i + 1 });
-      if (!out.nodes.has(m[1])) out.nodes.set(m[1], { id: m[1], label: m[1], line: i + 1 });
-      if (!out.nodes.has(m[4])) out.nodes.set(m[4], { id: m[4], label: m[4], line: i + 1 });
+    const expr = findEdgeExpression(line);
+    if (!expr) continue;
+    const froms = splitEndpointList(expr.left).map(parseEndpointToken).filter(Boolean);
+    const tos = splitEndpointList(expr.right).map(parseEndpointToken).filter(Boolean);
+    for (const n of froms.concat(tos)) addParsedNode(out, n.id, n.label, i + 1, n.shape);
+    for (const from of froms) {
+      for (const to of tos) {
+        out.edges.push({ from: from.id, op: expr.op, label: expr.label, to: to.id, line: i + 1 });
+      }
     }
   }
   return out;
@@ -2329,8 +3511,17 @@ function updateNodeEdgeCounts() {
   $('#sbNodes').textContent = p.nodes.size;
   $('#sbEdges').textContent = p.edges.length;
   $('#sbType').textContent = p.type;
+  const orgBtn = $('.rail-btn[data-tab="org"]');
+  if (orgBtn) {
+    orgBtn.hidden = !isFlowchartLike(p.type);
+    if (orgBtn.hidden && store.state.panels.leftTab === 'org') switchTab('code');
+  }
   renderOutline(p);
   renderStats(p);
+  if (store.state.panels.leftTab === 'org') {
+    const pane = $('.panel-tab[data-ptab="org"]');
+    if (pane) buildOrgTab(pane);
+  }
 }
 
 // ============================================================
@@ -2362,6 +3553,12 @@ const Linter = {
       stack.delete(n);
     }
     for (const n of adj.keys()) dfs(n);
+    if (store.state.hybridLayout && isFlowchartLike(p.type)) {
+      const h = analyzeHybridLayout(p, store.state.hybridDepth);
+      for (const node of new Set(h.subordinateWarnings)) {
+        w.push({ kind: 'hybrid-subtree', node, msg: `Hybrid layout works best when subordinate node "${node}" has no outgoing edges` });
+      }
+    }
     this.warnings = w;
     for (const x of w) log(x.msg, 'warn');
   },
@@ -2375,7 +3572,7 @@ function buildShareUrl() {
   const payload = {
     v: 1, code: s.code, type: s.diagramType, theme: s.mermaidTheme, dir: s.direction,
     eng: s.engine, sp: s.spacing, cv: s.curve, ct: s.customTheme,
-    cn: s.canvas,
+    cn: s.canvas, ve: s.visualEditMode, hl: s.hybridLayout, hd: s.hybridDepth,
   };
   const compressed = window.LZString.compressToEncodedURIComponent(JSON.stringify(payload));
   const url = location.origin + location.pathname + URL_HASH_PREFIX + compressed;
@@ -2397,6 +3594,9 @@ function restoreFromHash() {
       curve: data.cv ?? s.curve,
       customTheme: data.ct ?? s.customTheme,
       canvas: data.cn ?? s.canvas,
+      visualEditMode: data.ve ?? s.visualEditMode,
+      hybridLayout: data.hl ?? s.hybridLayout,
+      hybridDepth: data.hd ?? s.hybridDepth,
     }));
     return true;
   } catch (e) { log('Hash restore failed: ' + e.message, 'warn'); return false; }
@@ -2411,6 +3611,7 @@ const TEMPLATES = [
   { cat: 'Org Charts', name: '5-tier enterprise', code: `flowchart TB\n  Board["Board of Directors"] --> CEO\n  CEO --> CTO & CFO & COO & CMO\n  CTO --> VPE["VP Eng"] & VPP["VP Product"]\n  VPE --> EM1["Eng Mgr A"] & EM2["Eng Mgr B"]\n  EM1 --> D1["Dev 1"] & D2["Dev 2"]` },
   { cat: 'Org Charts', name: 'Matrix org', code: `flowchart TB\n  CEO --> Func["Functional"] & Proj["Projects"]\n  Func --> Eng & Des & Mkt\n  Proj --> P1[Project A] & P2[Project B]\n  Eng --- P1\n  Des --- P1\n  Eng --- P2\n  Mkt --- P2` },
   { cat: 'Org Charts', name: 'Family tree', code: `flowchart TB\n  GP1["Grandparent A"] & GP2["Grandparent B"] --> P1["Parent 1"]\n  P1 & P2["Parent 2"] --> C1["Child 1"]\n  P1 & P2 --> C2["Child 2"]` },
+  { cat: 'Org Charts', name: 'Hybrid layout demo', code: `flowchart TB\n  CEO["CEO"]\n  CEO --> MA["Marketing"]\n  CEO --> EN["Engineering"]\n  CEO --> FI["Finance"]\n  MA --> M1["Campaign Mgr"] & M2["Content Lead"] & M3["SEO Specialist"]\n  EN --> E1["Frontend Dev"] & E2["Backend Dev"] & E3["DevOps"] & E4["QA"]\n  FI --> F1["Controller"] & F2["Analyst"]` },
   { cat: 'Process', name: 'Linear flow', code: `flowchart LR\n  A[Idea] --> B[Design] --> C[Build] --> D[Test] --> E[Ship]` },
   { cat: 'Process', name: 'Decision tree', code: `flowchart TD\n  S[Start] --> Q{Has account?}\n  Q -->|Yes| L[Login]\n  Q -->|No| R[Register]\n  L --> H[Home]\n  R --> H` },
   { cat: 'Process', name: 'Swim lanes', code: `flowchart LR\n  subgraph User\n    A[Submit form]\n  end\n  subgraph App\n    B[Validate] --> C[Save]\n  end\n  subgraph Email\n    D[Send confirm]\n  end\n  A --> B\n  C --> D` },
@@ -2828,32 +4029,135 @@ function renderStats(parsed) {
 // ============================================================
 // INSPECTOR
 // ============================================================
+function refreshLayoutTab() {
+  const pane = $('.panel-tab[data-ptab="layout"]');
+  if (pane) buildLayoutTab(pane);
+}
+function nodeStyle(id) {
+  const re = new RegExp(`^\\s*style\\s+${escapeRegExp(id)}\\s+(.+)$`, 'm');
+  const m = store.state.code.match(re);
+  if (!m) return { fill: '#ffffff', stroke: '#5b5bd6' };
+  return {
+    fill: m[1].match(/fill:\s*(#[0-9a-f]{3,8}|[A-Za-z]+)/i)?.[1] || '#ffffff',
+    stroke: m[1].match(/stroke:\s*(#[0-9a-f]{3,8}|[A-Za-z]+)/i)?.[1] || '#5b5bd6',
+  };
+}
+function selectNodeById(id) {
+  const g = renderedNodeById(id);
+  if (g) selectNode(g);
+  else { store.set({ selected: { type: 'node', id } }); renderInspector(); }
+}
+function renderLayoutInspector(parsed) {
+  const s = store.state;
+  const sec = h('div', { class: 'section' });
+  sec.appendChild(h('h4', null, 'Layout'));
+  if (!isFlowchartLike(parsed.type)) {
+    sec.appendChild(h('p', { class: 'muted', style: { fontSize: '12px', margin: 0 } }, 'Layout controls are available for flowcharts.'));
+    return sec;
+  }
+  sec.append(
+    h('div', { class: 'row' }, h('label', null, 'Direction'), h('div', { class: 'ctl' }, mkSelect(['TB','BT','LR','RL'].map(d => [d, d]), s.direction, v => { store.set({ direction: v, overrideDirection: true }); refreshLayoutTab(); scheduleRender(); }))),
+    h('div', { class: 'row' }, h('label', null, 'Engine'), h('div', { class: 'ctl' }, mkSelect([['dagre','Dagre'],['elk','ELK']], s.engine, v => { store.set({ engine: v }); refreshLayoutTab(); scheduleRender(); }))),
+    h('div', { class: 'row' }, h('label', null, 'Hybrid org'), h('div', { class: 'ctl' }, mkSwitch(s.hybridLayout, v => { store.set({ hybridLayout: v }); refreshLayoutTab(); renderInspector(); scheduleRender(); }))),
+  );
+  if (s.hybridLayout) {
+    const depth = h('input', { class: 'input', type: 'number', min: 0, max: 8, value: s.hybridDepth, 'aria-label': 'Manager depth' });
+    depth.onchange = () => {
+      const raw = Number.parseInt(depth.value, 10);
+      const next = clamp(Number.isFinite(raw) ? raw : 1, 0, 8);
+      store.set({ hybridDepth: next });
+      refreshLayoutTab();
+      renderInspector();
+      scheduleRender();
+    };
+    sec.append(
+      h('div', { class: 'row' }, h('label', null, 'Manager depth'), h('div', { class: 'ctl' }, depth)),
+      h('button', { class: 'btn-secondary', style: { width: '100%', justifyContent: 'center' }, onclick: showTransformedCodeModal }, 'View transformed code')
+    );
+  }
+  return sec;
+}
 /** Render inspector for selected node/edge. */
 function renderInspector() {
   const el = $('#inspectorBody'); if (!el) return;
   const sel = store.state.selected;
+  const parsed = parseDiagram(store.state.code);
+  el.innerHTML = '';
+  el.appendChild(renderLayoutInspector(parsed));
   if (!sel) {
-    el.innerHTML = '<div class="inspector-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Select a node or edge to edit its properties.</div>';
+    el.appendChild(h('div', { class: 'inspector-empty', html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Select a node or edge to edit its properties.' }));
     return;
   }
-  el.innerHTML = '';
   if (sel.type === 'node') {
-    const code = store.state.code;
-    const re = new RegExp(`(\\b${sel.id}\\b)\\s*([\\[\\(\\{]([^\\]\\)\\}\\n]*)[\\]\\)\\}])`);
-    const m = code.match(re);
-    const label = m ? m[3].replace(/^"|"$/g, '') : sel.id;
+    const node = parsed.nodes.get(sel.id) || { id: sel.id, label: sel.id, shape: 'rect' };
+    const label = node.label || sel.id;
     const sec = h('div', { class: 'section' });
     sec.appendChild(h('h4', null, 'Node Properties'));
     sec.appendChild(h('div', { class: 'row' }, h('label', null, 'ID'), h('div', { class: 'ctl mono', style: { fontSize: '12px', color: 'var(--text-2)' } }, sel.id)));
     const labelIn = h('input', { class: 'input', value: label });
-    labelIn.onchange = () => {
-      const newCode = code.replace(re, `$1["${labelIn.value.replace(/"/g, '\\"')}"]`);
-      if (newCode !== code) applyCodeChange(newCode);
-    };
+    labelIn.onchange = () => editNodeLabel(sel.id, labelIn.value);
     sec.appendChild(h('div', { class: 'row' }, h('label', null, 'Label'), h('div', { class: 'ctl' }, labelIn)));
+    if (store.state.visualEditMode && isFlowchartLike(parsed.type)) {
+      const parts = String(label).split('\n');
+      const nameIn = h('input', { class: 'input', value: parts[0] || '' });
+      const roleIn = h('input', { class: 'input', value: parts.slice(1).join('\n') || '' });
+      const commitPerson = () => editNodeLabel(sel.id, roleIn.value.trim() ? `${nameIn.value.trim()}\n${roleIn.value.trim()}` : nameIn.value.trim());
+      nameIn.onchange = commitPerson;
+      roleIn.onchange = commitPerson;
+      sec.append(
+        h('div', { class: 'row' }, h('label', null, 'Name'), h('div', { class: 'ctl' }, nameIn)),
+        h('div', { class: 'row' }, h('label', null, 'Role'), h('div', { class: 'ctl' }, roleIn)),
+      );
+    }
     el.appendChild(sec);
+
+    if (store.state.visualEditMode) {
+      const shapeSec = h('div', { class: 'section' });
+      shapeSec.appendChild(h('h4', null, 'Shape'));
+      const shapeGrid = h('div', { class: 'shape-grid' });
+      for (const sh of SHAPES.filter(x => ['rect','round','diamond','stadium','sub','cyl','circle'].includes(x.id))) {
+        shapeGrid.appendChild(h('button', { class: `shape-btn${(node.shape || 'rect') === sh.id ? ' active' : ''}`, title: sh.name, onclick: () => { applyCodeChange(CodeMutator.changeShape(store.state.code, sel.id, sh.id)); } }, `${sh.syntax[0]} ${sh.syntax[1]}`));
+      }
+      shapeSec.appendChild(shapeGrid);
+      el.appendChild(shapeSec);
+
+      const styleSec = h('div', { class: 'section' });
+      const st = nodeStyle(sel.id);
+      const fill = h('input', { type: 'color', class: 'color-input', value: /^#/.test(st.fill) ? st.fill : '#ffffff' });
+      const stroke = h('input', { type: 'color', class: 'color-input', value: /^#/.test(st.stroke) ? st.stroke : '#5b5bd6' });
+      fill.onchange = stroke.onchange = () => applyCodeChange(CodeMutator.setStyle(store.state.code, sel.id, fill.value, stroke.value));
+      styleSec.append(h('h4', null, 'Style'),
+        h('div', { class: 'row' }, h('label', null, 'Fill'), h('div', { class: 'ctl' }, fill)),
+        h('div', { class: 'row' }, h('label', null, 'Stroke'), h('div', { class: 'ctl' }, stroke)));
+      el.appendChild(styleSec);
+
+      const connSec = h('div', { class: 'section' });
+      connSec.appendChild(h('h4', null, 'Connections'));
+      const incoming = parsed.edges.filter(e => e.to === sel.id);
+      const outgoing = parsed.edges.filter(e => e.from === sel.id);
+      const list = h('div', { class: 'connection-list' });
+      for (const e of incoming) list.appendChild(h('button', { class: 'connection-item', onclick: () => selectNodeById(e.from) }, h('span', null, `from ${parsed.nodes.get(e.from)?.label || e.from}`), h('span', { class: 'mono' }, e.from)));
+      for (const e of outgoing) list.appendChild(h('button', { class: 'connection-item', onclick: () => selectNodeById(e.to) }, h('span', null, `to ${parsed.nodes.get(e.to)?.label || e.to}`), h('span', { class: 'mono' }, e.to)));
+      if (!incoming.length && !outgoing.length) list.appendChild(h('p', { class: 'muted', style: { fontSize: '12px', margin: 0 } }, 'No connections.'));
+      connSec.appendChild(list);
+      el.appendChild(connSec);
+
+      const actions = h('div', { class: 'section' });
+      actions.append(h('h4', null, 'Actions'),
+        h('div', { class: 'flex gap-6', style: { flexWrap: 'wrap' } },
+          h('button', { class: 'btn-secondary', onclick: () => addSubordinate(sel.id) }, 'Add subordinate'),
+          h('button', { class: 'btn-secondary', onclick: () => addSameLevelPerson(sel.id) }, 'Add same level'),
+          h('button', { class: 'btn-secondary', onclick: () => addManagerForNode(sel.id) }, 'Add manager'),
+          h('button', { class: 'btn-secondary', onclick: () => promotePerson(sel.id) }, 'Promote'),
+          h('button', { class: 'btn-secondary', onclick: () => openDemoteModal(sel.id) }, 'Demote'),
+          h('button', { class: 'btn-secondary', onclick: () => addPlaceholderNode(null) }, 'Add top level'),
+          h('button', { class: 'btn-secondary', onclick: () => duplicateNode(sel.id) }, 'Duplicate'),
+          h('button', { class: 'btn-secondary', style: { color: 'var(--danger)' }, onclick: () => deleteNode(sel.id) }, 'Delete'),
+        ));
+      el.appendChild(actions);
+    }
   } else {
-    el.innerHTML = '<div class="section"><h4>Edge Selected</h4><p class="muted" style="font-size:12px">Edge property editing coming soon.</p></div>';
+    el.appendChild(h('div', { class: 'section' }, h('h4', null, 'Edge Selected'), h('p', { class: 'muted', style: { fontSize: '12px' } }, 'Edge property editing coming soon.')));
   }
 }
 
@@ -2902,6 +4206,26 @@ function buildLayoutTab(pane) {
   sec1.appendChild(h('div', { class: 'row', style: { marginTop: '8px' } }, h('label', null, 'Override code'), h('div', { class: 'ctl' }, mkSwitch(s.overrideDirection, v => { store.set({ overrideDirection: v }); scheduleRender(); }))));
   pane.innerHTML = '';
   pane.appendChild(sec1);
+  if (isFlowchartLike(parseDiagram(store.state.code).type)) {
+    const secH = h('div', { class: 'section' });
+    secH.appendChild(h('h4', null, 'Hybrid Org'));
+    secH.appendChild(h('div', { class: 'row' }, h('label', null, 'Enabled'), h('div', { class: 'ctl' }, mkSwitch(s.hybridLayout, v => { store.set({ hybridLayout: v }); renderInspector(); buildLayoutTab(pane); scheduleRender(); }))));
+    if (s.hybridLayout) {
+      const depth = h('input', { class: 'input', type: 'number', min: 0, max: 8, value: s.hybridDepth });
+      depth.onchange = () => {
+        const raw = Number.parseInt(depth.value, 10);
+        store.set({ hybridDepth: clamp(Number.isFinite(raw) ? raw : 1, 0, 8) });
+        renderInspector();
+        buildLayoutTab(pane);
+        scheduleRender();
+      };
+      secH.append(
+        h('div', { class: 'row' }, h('label', null, 'Manager depth'), h('div', { class: 'ctl' }, depth)),
+        h('button', { class: 'btn-secondary', style: { width: '100%', justifyContent: 'center' }, onclick: showTransformedCodeModal }, 'View transformed code')
+      );
+    }
+    pane.appendChild(secH);
+  }
   const sec2 = h('div', { class: 'section' });
   sec2.appendChild(h('h4', null, 'Engine'));
   sec2.appendChild(h('div', { class: 'row' }, h('label', null, 'Layout'), h('div', { class: 'ctl' }, mkSelect([['dagre','Dagre'],['elk','ELK']], s.engine, v => { store.set({ engine: v }); scheduleRender(); }))));
@@ -3021,6 +4345,11 @@ function applyCanvasBg() {
 }
 function buildOrgTab(pane) {
   pane.innerHTML = '';
+  const parsed = parseDiagram(store.state.code);
+  if (!isFlowchartLike(parsed.type)) {
+    pane.appendChild(h('div', { class: 'inspector-empty' }, 'Org tools are available for flowcharts.'));
+    return;
+  }
   const s = store.state.org;
   const sec = h('div', { class: 'section' });
   sec.appendChild(h('h4', null, 'Org Chart Mode'));
@@ -3031,6 +4360,38 @@ function buildOrgTab(pane) {
     h('div', { class: 'row' }, h('label', null, 'Depth limit'), h('div', { class: 'ctl' }, mkRange(0, 20, 1, s.depthLimit, v => { store.update('org.depthLimit', v); scheduleRender(); }))),
   );
   pane.appendChild(sec);
+  const quick = h('div', { class: 'section' });
+  quick.append(
+    h('h4', null, 'People'),
+    h('button', { class: 'btn-primary', style: { width: '100%', justifyContent: 'center', marginBottom: '8px' }, onclick: () => addPlaceholderNode(null) }, '+ Add Person')
+  );
+  const { parents } = buildGraphMaps(parsed);
+  const analysis = analyzeHybridLayout(parsed, store.state.hybridDepth);
+  const list = h('div', { class: 'org-list' });
+  const nodes = [...parsed.nodes.values()].sort((a, b) => (a.line || 0) - (b.line || 0));
+  for (const node of nodes) {
+    const label = h('input', { class: 'input', value: node.label || node.id, style: { marginLeft: `${Math.min(36, (analysis.depths.get(node.id) || 0) * 10)}px` } });
+    label.onchange = () => editNodeLabel(node.id, label.value);
+    const parentId = parents.get(node.id)?.[0] || '';
+    const parent = h('select', { class: 'select', title: 'Change parent' },
+      h('option', { value: '', selected: !parentId }, 'Root'),
+      ...nodes.filter(n => n.id !== node.id).map(n => h('option', { value: n.id, selected: n.id === parentId }, n.label || n.id))
+    );
+    parent.onchange = () => {
+      applyCodeChange(CodeMutator.changeParent(store.state.code, node.id, parent.value));
+      buildOrgTab(pane);
+    };
+    list.appendChild(h('div', { class: 'org-row' },
+      label,
+      parent,
+      h('div', { class: 'org-actions' },
+        h('button', { class: 'icon-btn', title: 'Select', html: ICON.search, onclick: () => selectNodeById(node.id) }),
+        h('button', { class: 'icon-btn', title: 'Delete', html: ICON.trash, onclick: () => deleteNode(node.id) }),
+      )
+    ));
+  }
+  quick.appendChild(list);
+  pane.appendChild(quick);
 }
 function buildPresetsTab(pane) {
   pane.innerHTML = '';
@@ -3212,6 +4573,7 @@ function openCommandPalette() {
     { name: 'Save .mmd', group: 'File', kbd: '⌘S', run: () => downloadBlob(new Blob([store.state.code]), 'diagram.mmd') },
     { name: 'Export', group: 'File', kbd: '⌘E', run: openExportModal },
     { name: 'Share', group: 'File', run: openShareModal },
+    { name: 'Tutorial', group: 'Help', run: openTutorial },
     { name: 'Undo', group: 'Edit', kbd: '⌘Z', run: undo },
     { name: 'Redo', group: 'Edit', kbd: '⇧⌘Z', run: redo },
     { name: 'Find', group: 'Edit', kbd: '⌘F', run: () => editor?.openFind() },
@@ -3299,7 +4661,8 @@ function wireKeyboard() {
 
     // Non-meta shortcuts (only when not in input)
     if (inInput) return;
-    if (e.key === 'Escape') { clearSelection(); clearFocusMode(); document.body.classList.remove('fullscreen-canvas'); return; }
+    if (e.key === 'Escape') { cancelTransientVisualEdit(); clearSelection(); clearFocusMode(); document.body.classList.remove('fullscreen-canvas'); return; }
+    if (e.key === 'c' || e.key === 'C') { e.preventDefault(); setVisualTool('connect'); return; }
     if (e.key === '[') { e.preventDefault(); togglePanel('left'); return; }
     if (e.key === ']') { e.preventDefault(); togglePanel('right'); return; }
     if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomIn(); return; }
@@ -3315,7 +4678,7 @@ function showHelp() {
     ['⌘K', 'Command palette'], ['⌘S', 'Save .mmd'], ['⌘O', 'Open file'], ['⌘E', 'Export'],
     ['⌘Z', 'Undo'], ['⇧⌘Z', 'Redo'], ['⌘F', 'Find'], ['⌘/', 'Toggle comment'],
     ['⌘D', 'Duplicate node'], ['⌘Enter', 'Re-render'], ['[ / ]', 'Toggle panels'],
-    ['+ / -', 'Zoom in/out'], ['0', 'Zoom 100%'], ['F', 'Fit to screen'], ['Esc', 'Deselect / exit'],
+    ['+ / -', 'Zoom in/out'], ['0', 'Zoom 100%'], ['F', 'Fit to screen'], ['C', 'Connect mode'], ['Esc', 'Deselect / exit'],
     ['?', 'This help'],
   ];
   const body = h('div', { class: 'modal-body' });
@@ -3328,6 +4691,230 @@ function showHelp() {
   }
   body.appendChild(tbl);
   openModal({ title: 'Keyboard Shortcuts', body });
+}
+
+function tutorialHeroVisual() {
+  return h('div', { class: 'tutorial-app-visual', 'aria-hidden': 'true' },
+    h('div', { class: 'tutorial-mini-top' },
+      h('span', { class: 'tutorial-dot a' }),
+      h('span', { class: 'tutorial-dot b' }),
+      h('span', { class: 'tutorial-dot c' }),
+      h('span', { class: 'tutorial-pill', style: { marginLeft: 'auto', padding: '3px 7px' } }, 'v1.1')
+    ),
+    h('div', { class: 'tutorial-mini-body' },
+      h('div', { class: 'tutorial-mini-code' },
+        h('span', { class: 'kw' }, 'flowchart TB'),
+        h('span', null, '  CEO["Avery Ray"]'),
+        h('span', null, '  CTO["Engineering"]'),
+        h('span', { class: 'str' }, '  CTO --> Dev1["Frontend"]'),
+        h('span', { class: 'str' }, '  CTO --> Dev2["Platform"]'),
+        h('span', null, '  CEO --> CTO')
+      ),
+      h('div', { class: 'tutorial-mini-canvas' },
+        h('span', { class: 'tutorial-edge e1' }),
+        h('span', { class: 'tutorial-edge e2' }),
+        h('span', { class: 'tutorial-edge e3' }),
+        h('div', { class: 'tutorial-node root' }, 'CEO'),
+        h('div', { class: 'tutorial-node left' }, 'Product'),
+        h('div', { class: 'tutorial-node mid' }, 'Engineering'),
+        h('div', { class: 'tutorial-node right' }, 'Finance')
+      )
+    )
+  );
+}
+
+function tutorialVisual(kind) {
+  if (kind === 'code') {
+    return h('div', { class: 'tutorial-visual code', 'aria-hidden': 'true' },
+      h('span', { class: 'line' }, '1  flowchart TB'),
+      h('span', { class: 'hot' }, '2    CEO["Name\\nTitle"]'),
+      h('span', null, '3    CEO --> CTO'),
+      h('span', null, '4    CTO --> Dev & QA'),
+      h('span', { class: 'line' }, 'find  format  wrap  comment')
+    );
+  }
+  if (kind === 'canvas') {
+    return h('div', { class: 'tutorial-visual canvas', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-toolbar' },
+        h('span', { class: 'tutorial-tool' }),
+        h('span', { class: 'tutorial-tool active' }),
+        h('span', { class: 'tutorial-tool' })
+      ),
+      h('span', { class: 'tutorial-chip', style: { left: '10px', top: '10px' } }, '100%'),
+      h('div', { class: 'tutorial-node root', style: { top: '42px' } }, 'Preview'),
+      h('div', { class: 'tutorial-node left', style: { top: '88px' } }, 'Pan'),
+      h('div', { class: 'tutorial-node right', style: { top: '88px' } }, 'Zoom')
+    );
+  }
+  if (kind === 'org') {
+    return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-org-person ceo' }, 'CEO'),
+      h('div', { class: 'tutorial-org-person mgr' }, 'Manager'),
+      h('div', { class: 'tutorial-org-person rep1' }, 'Rep'),
+      h('div', { class: 'tutorial-org-person rep2' }, 'Peer'),
+      h('div', { class: 'tutorial-action-stack' },
+        h('span', { class: 'tutorial-action' }, 'Add subordinate'),
+        h('span', { class: 'tutorial-action' }, 'Promote'),
+        h('span', { class: 'tutorial-action' }, 'Demote')
+      )
+    );
+  }
+  if (kind === 'hybrid') {
+    return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-node root', style: { top: '10px' } }, 'CEO'),
+      h('div', { class: 'tutorial-hybrid-row managers' },
+        h('div', { class: 'tutorial-team' }, h('div'), h('div'), h('div')),
+        h('div', { class: 'tutorial-team' }, h('div'), h('div'), h('div')),
+        h('div', { class: 'tutorial-team' }, h('div'), h('div'))
+      ),
+      h('span', { class: 'tutorial-chip', style: { right: '8px', bottom: '8px' } }, 'Hybrid')
+    );
+  }
+  if (kind === 'inspector') {
+    return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-inspector-form' },
+        h('div', { class: 'tutorial-field', style: { width: '92%' } }),
+        h('div', { class: 'tutorial-shapes' },
+          h('span', { class: 'tutorial-shape' }),
+          h('span', { class: 'tutorial-shape round' }),
+          h('span', { class: 'tutorial-shape diamond' })
+        ),
+        h('div', { class: 'tutorial-swatches' },
+          h('span', { class: 'tutorial-swatch a' }),
+          h('span', { class: 'tutorial-swatch b' }),
+          h('span', { class: 'tutorial-swatch c' })
+        ),
+        h('div', { class: 'tutorial-field', style: { width: '68%' } }),
+        h('div', { class: 'tutorial-field', style: { width: '82%' } })
+      )
+    );
+  }
+  if (kind === 'templates') {
+    return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-template-grid' },
+        h('div', { class: 'tutorial-template' }),
+        h('div', { class: 'tutorial-template' }),
+        h('div', { class: 'tutorial-template' }),
+        h('div', { class: 'tutorial-template' })
+      )
+    );
+  }
+  if (kind === 'export') {
+    return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+      h('div', { class: 'tutorial-export-icons' },
+        h('div', { class: 'tutorial-file' }, 'PNG'),
+        h('div', { class: 'tutorial-file' }, 'SVG'),
+        h('div', { class: 'tutorial-file' }, 'PDF'),
+        h('div', { class: 'tutorial-file' }, 'URL')
+      )
+    );
+  }
+  return h('div', { class: 'tutorial-visual', 'aria-hidden': 'true' },
+    h('div', { class: 'tutorial-helper-list' },
+      h('div', { class: 'tutorial-helper' }, 'Command palette', h('span', { class: 'kbd' }, 'Cmd K')),
+      h('div', { class: 'tutorial-helper' }, 'Undo history', h('span', { class: 'kbd' }, 'Cmd Z')),
+      h('div', { class: 'tutorial-helper' }, 'Keyboard help', h('span', { class: 'kbd' }, '?')),
+      h('div', { class: 'tutorial-helper' }, 'Local privacy')
+    )
+  );
+}
+
+function tutorialCard({ title, summary, visual, items }) {
+  return h('article', { class: 'tutorial-card' },
+    tutorialVisual(visual),
+    h('div', null,
+      h('h5', null, title),
+      h('p', null, summary),
+      h('ul', null, ...items.map(item => h('li', null, item)))
+    )
+  );
+}
+
+function openTutorial() {
+  const features = [
+    {
+      title: 'Code editor',
+      summary: 'The source stays in charge, with fast editing tools built around Mermaid syntax.',
+      visual: 'code',
+      items: ['Syntax highlighting, line numbers, find, format, word wrap and comments.', 'Undo/redo plus saved versions for recoverable edits.', 'Outline, stats, lint feedback and console logs while you work.']
+    },
+    {
+      title: 'Live canvas',
+      summary: 'Every render becomes an inspectable preview with controls for navigation and presentation.',
+      visual: 'canvas',
+      items: ['Pan, zoom, fit, center, fullscreen and lock controls.', 'Focus mode dims unrelated nodes for easier reading.', 'Stale render badge keeps the last good diagram visible after parse errors.']
+    },
+    {
+      title: 'Visual org editing',
+      summary: 'v1.1 adds org-chart actions that mutate clean Mermaid code.',
+      visual: 'org',
+      items: ['Right-click people to add subordinates, managers or same-level peers.', 'Promote and demote people without hand-editing edges.', 'Double-click or inspect a person to edit labels inline.']
+    },
+    {
+      title: 'Hybrid layout',
+      summary: 'An opt-in org layout that keeps managers horizontal and their teams stacked vertically.',
+      visual: 'hybrid',
+      items: ['Toggle hybrid org layout in Layout controls for flowcharts.', 'Choose manager depth for deeper org structures.', 'View transformed code from the Hybrid badge when debugging layout.']
+    },
+    {
+      title: 'Inspector',
+      summary: 'Select a node to edit its label, shape, style and relationships from the right panel.',
+      visual: 'inspector',
+      items: ['Name and role fields support two-line org labels.', 'Shape picker covers common Mermaid node shapes.', 'Connection lists, duplicate, delete and org actions live together.']
+    },
+    {
+      title: 'Templates and org tab',
+      summary: 'Start from curated examples, then manage people from a structured org outline.',
+      visual: 'templates',
+      items: ['Templates include flowcharts, sequence diagrams, ER, Gantt, org charts and hybrid demos.', 'Org Mode lists people, parents and quick actions for flowchart orgs.', 'Presets save reusable visual settings.']
+    },
+    {
+      title: 'Themes and canvas styling',
+      summary: 'Tune the diagram theme and the surrounding canvas without leaving the tool.',
+      visual: 'inspector',
+      items: ['Built-in Mermaid themes plus custom colors.', 'Canvas backgrounds, spacing, curves and layout engine controls.', 'UI scale, light mode, dark mode and auto theme options.']
+    },
+    {
+      title: 'Share and export',
+      summary: 'Move diagrams out of the editor as links, embeds or polished files.',
+      visual: 'export',
+      items: ['Export PNG, JPEG, SVG and PDF from the rendered diagram.', 'Share compressed state in the URL hash, including v1.1 layout settings.', 'Copy Markdown and iframe embed snippets.']
+    },
+    {
+      title: 'Workflow helpers',
+      summary: 'Small tools keep the app quick during repeated diagram work.',
+      visual: 'helpers',
+      items: ['Command palette, keyboard shortcuts and panel toggles.', 'Local file open/save and drag-and-drop import.', 'All diagram work stays local in the browser.']
+    }
+  ];
+  const body = h('div', { class: 'modal-body tutorial' },
+    h('div', { class: 'tutorial-hero' },
+      h('div', { class: 'tutorial-copy' },
+        h('div', { class: 'tutorial-version' }, 'mermaid.tools v1.1'),
+        h('h3', null, 'A source-first Mermaid editor with visual org-chart controls.'),
+        h('p', null, 'Write Mermaid on the left, inspect the rendered diagram on the canvas, and use v1.1 visual editing when an org chart should feel faster than typing every edge by hand.'),
+        h('div', { class: 'tutorial-pills' },
+          h('span', { class: 'tutorial-pill' }, h('span', { class: 'ic', html: ICON.check }), 'Code remains source of truth'),
+          h('span', { class: 'tutorial-pill' }, h('span', { class: 'ic', html: ICON.check }), 'Org actions rewrite source'),
+          h('span', { class: 'tutorial-pill' }, h('span', { class: 'ic', html: ICON.check }), 'Hybrid layout is preview-only')
+        )
+      ),
+      tutorialHeroVisual()
+    ),
+    h('div', { class: 'tutorial-section-title' }, h('h4', null, 'Feature map')),
+    h('div', { class: 'tutorial-grid' }, ...features.map(tutorialCard)),
+    h('div', { class: 'tutorial-footer-note' }, 'Tip: turn on visual edit mode from the canvas toolbar when you want canvas clicks and right-click org actions to edit the source. Leave it off when you only want to read, pan, zoom and inspect.')
+  );
+  openModal({
+    title: 'Tutorial',
+    size: 'xl',
+    body,
+    footer: close => h('div', { class: 'modal-footer' },
+      h('button', { class: 'btn-secondary', onclick: () => { close(); switchTab('templates'); } }, 'Open templates'),
+      h('button', { class: 'btn-secondary', onclick: () => { setVisualEditMode(true); close(); } }, 'Enable visual edit'),
+      h('button', { class: 'btn-primary', onclick: close }, 'Done')
+    )
+  });
 }
 
 // ============================================================
@@ -3396,6 +4983,9 @@ function wireToolbar() {
   $('#zoom100').onclick = zoom100;
   $('#zoomCenter').onclick = zoomCenter;
   $('#focusBtn').onclick = () => { if (store.state.selected?.type === 'node') focusOnNode(store.state.selected.id); };
+  $('#visualEditBtn').onclick = () => setVisualEditMode(!store.state.visualEditMode);
+  $('#addNodeBtn').onclick = () => store.state.selected?.type === 'node' ? addSubordinate(store.state.selected.id) : addPlaceholderNode(null);
+  $('#connectBtn').onclick = () => setVisualTool('connect');
   $('#fullscreenBtn').onclick = () => document.body.classList.toggle('fullscreen-canvas');
   $('#lockBtn').onclick = () => {
     const locked = !store.state.panels.locked;
@@ -3407,8 +4997,10 @@ function wireToolbar() {
   $('#shareBtn').onclick = openShareModal;
   $('#exportBtn').onclick = openExportModal;
   $('#cmdkBtn').onclick = openCommandPalette;
+  $('#tutorialBtn').onclick = openTutorial;
   $('#helpBtn').onclick = showHelp;
   $('#closeInspector').onclick = () => togglePanel('right');
+  $('#hybridBadge').onclick = (e) => showHybridBadgeMenu(e);
   $('#settingsBtn').onclick = () => {
     openModal({ title: 'Settings', body: h('div', { class: 'modal-body' },
       h('div', { class: 'section' },
@@ -3483,6 +5075,7 @@ async function init() {
   wireKeyboard();
   wireResizers();
   applyCanvasBg();
+  updateVisualEditUi();
 
   // Autosave + version intervals
   setInterval(autosave, AUTOSAVE_INTERVAL_MS);
